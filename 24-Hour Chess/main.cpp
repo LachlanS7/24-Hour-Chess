@@ -166,10 +166,10 @@ int main() {
         }
 
         unsigned int getId(Piece piece) {
-            if (piece >= 4096) {
-                return pieceTextureMap[piece - 4096];
+            if (piece.id >= 4096) {
+                return pieceTextureMap[piece.id - 4096];
             }
-            return pieceTextureMap[piece];
+            return pieceTextureMap[piece.id];
         }
     };
 
@@ -246,8 +246,7 @@ int main() {
             }
         }
         if (index1 != -1 && index2 != -1) {
-            std::cout << index1 << ", " << index2 << std::endl;
-            std::cout << board.move(index1, index2) << std::endl;
+            board.move(index1, index2);
             index1 = -1;
             index2 = -1;
         }
@@ -266,7 +265,7 @@ int main() {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         for (int i = 0; i < 64; i++) {
-            if (board.getPiece(i)) {
+            if (board.getPiece(i).id) {
 
                 auto pos = board.position(i);
 

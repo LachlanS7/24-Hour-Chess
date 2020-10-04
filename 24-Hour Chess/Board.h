@@ -41,8 +41,12 @@ private:
 	std::array<Piece, 64> board;
 
 	//Move methods
-	bool isDoubleStepValid(Piece& selectedPiece, int distance);
+	bool isDoubleStepValid(Piece& selectedPiece, float distance);
 	bool isAttacking(Piece& selectedPiece, Piece& targetPiece);
+	bool isUniDirectionalityValid(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPosition);
+	bool isLmovementValid(Piece& selectedPiece, float distance);
+	bool isOtherMovementValid(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPos, unsigned int intialIndex, unsigned int finalIndex);
+	bool isCastling(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPos, int initialIndex, int finalIndex);
 
 	bool clearPath(Vec2 direction, int initialIndex, int finalIndex);
 	bool vacant(unsigned int index);

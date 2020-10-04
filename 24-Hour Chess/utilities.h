@@ -57,8 +57,6 @@ public:
 		return Vec2(RoundAwayFromZero(x / length()), RoundAwayFromZero(y / length()));
 	}
 
-	Vec2 
-
 	float length() {
 		return (sqrtf(powf(x, 2) + powf(y, 2)));
 	}
