@@ -215,7 +215,7 @@ int main() {
         if (index1 != -1) {
 
             transform = glm::mat4(1);
-            transform = glm::translate(transform, glm::vec3(2.0f * XPOS / SCR_WIDTH - 1, -2.0f * YPOS / SCR_WIDTH + 1, 0.0f));
+            transform = glm::translate(transform, glm::vec3(2.0f * XPOS / SCR_WIDTH - 1, -2.0f * YPOS / SCR_HEIGHT + 1, 0.0f));
 
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
             glBindTexture(GL_TEXTURE_2D, board.getTexture(index1));
@@ -223,9 +223,6 @@ int main() {
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         }
-
-
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
