@@ -186,5 +186,9 @@ bool Board::move(int i1, int i2) {
 		else { return false; }
 	}
 
+	if (position(i2).y == 7 * (-board[i2].get(options::colour) + 1) && board[i2].get(options::promotable)) {
+		board[i2].id = queen + board[i2].get(options::colour);
+	}
+
 	return true;
 }

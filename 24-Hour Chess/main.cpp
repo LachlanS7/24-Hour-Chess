@@ -29,8 +29,8 @@ inline void loadImage(std::string address, unsigned int* data, bool rgba = false
 
 
 //------------------------------- Settings -------------------------
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 800;
+unsigned int SCR_WIDTH = 800;
+unsigned int SCR_HEIGHT = 800;
 
 int main() {
 
@@ -297,6 +297,8 @@ void processInput(GLFWwindow* window, std::unordered_map<int, bool>* inputMap) {
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+    SCR_HEIGHT = height;
+    SCR_WIDTH = width;
 }
 
 std::string fromFile(std::string location) {
@@ -332,7 +334,7 @@ inline void loadImage(std::string address, unsigned int* texture, bool rgba) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, nrChannels;
