@@ -1,21 +1,74 @@
 #include "Board.h"
 
-Board::Board() {
+Board::Board(boardType bt) {
+	if (bt == boardType::normal) {
+		insertPiece({ 0, 0 }, rook);
+		insertPiece({ 1, 0 }, knight);
+		insertPiece({ 2, 0 }, bishop);
+		insertPiece({ 3, 0 }, king);
+		insertPiece({ 4, 0 }, queen);
+		insertPiece({ 5, 0 }, bishop);
+		insertPiece({ 6, 0 }, knight);
+		insertPiece({ 7, 0 }, rook);
 
+		insertPiece({ 0, 1 }, pawn);
+		insertPiece({ 1, 1 }, pawn);
+		insertPiece({ 2, 1 }, pawn);
+		insertPiece({ 3, 1 }, pawn);
+		insertPiece({ 4, 1 }, pawn);
+		insertPiece({ 5, 1 }, pawn);
+		insertPiece({ 6, 1 }, pawn);
+		insertPiece({ 7, 1 }, pawn);
+
+		insertPiece({ 0, 6 }, pawn + 1);
+		insertPiece({ 1, 6 }, pawn + 1);
+		insertPiece({ 2, 6 }, pawn + 1);
+		insertPiece({ 3, 6 }, pawn + 1);
+		insertPiece({ 4, 6 }, pawn + 1);
+		insertPiece({ 5, 6 }, pawn + 1);
+		insertPiece({ 6, 6 }, pawn + 1);
+		insertPiece({ 7, 6 }, pawn + 1);
+
+		insertPiece({ 0, 7 }, rook + 1);
+		insertPiece({ 1, 7 }, knight + 1);
+		insertPiece({ 2, 7 }, bishop + 1);
+		insertPiece({ 3, 7 }, king + 1);
+		insertPiece({ 4, 7 }, queen + 1);
+		insertPiece({ 5, 7 }, bishop + 1);
+		insertPiece({ 6, 7 }, knight + 1);
+		insertPiece({ 7, 7 }, rook + 1);
+	}
 }
 
-Vec2 Board::position(int index) {
+void Board::attachTexture(Piece piece, std::string address, bool rgba) {
+	attachTexture(pieces(piece.getStaticID()), piece.get(options::colour), address, rgba);
+}
+
+void Board::attachTexture(pieces pieceID, bool colour, std::string address, bool rgba) {
+	pieceTextureMap.insert_or_assign(pieceID + colour, 0);
+	utilities::genTexture(address, &pieceTextureMap[pieceID + colour], rgba);
+}
+
+texture Board::getTexture(Piece piece) {
+	return pieceTextureMap[pieces(piece.getStaticID())];
+}
+
+texture Board::getTexture(unsigned int index) {
+	return pieceTextureMap[pieces(getPiece(index).getStaticID())];
+}
+
+utilities::Vec2 Board::position(int index) {
 	int x = index % 8;
 	int y = (index - x) / 8;
 
-	return Vec2(x, y);
+	return utilities::Vec2(x, y);
 }
 
 bool Board::vacant(unsigned int index) {
 	return board[index].id == 0;
 }
 
-bool Board::clearPath(Vec2 direction, int initialIndex, int finalIndex) {
+bool Board::clearPath(utilities::Vec2 direction, int initialIndex, int finalIndex) {
 
 	initialIndex += direction.x;
 	initialIndex += direction.y * 8;
@@ -29,15 +82,15 @@ bool Board::clearPath(Vec2 direction, int initialIndex, int finalIndex) {
 	return true;
 }
 
-Piece Board::getPiece(unsigned int index) {
+Piece& Board::getPiece(unsigned int index) {
 	return board[index];
 }
 
-void Board::insertPiece(Vec2 position, Piece piece) {
+void Board::insertPiece(utilities::Vec2 position, Piece piece) {
 	board[position.x + 8 * position.y] = piece;
 }
 
-void Board::insertPiece(Vec2 position, unsigned int pieceId) {
+void Board::insertPiece(utilities::Vec2 position, unsigned int pieceId) {
 	board[position.x + 8 * position.y] = Piece(pieceId);
 }
 
@@ -57,7 +110,7 @@ bool Board::isDoubleStepValid(Piece& selectedPiece, float distance) {
 	return true;
 }
 
-bool Board::isUniDirectionalityValid(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPos) {
+bool Board::isUniDirectionalityValid(Piece& selectedPiece, Piece& targetPiece, utilities::Vec2 deltaPos) {
 	if (selectedPiece.get(options::uniDirectional)) {
 		if (deltaPos.y / abs(deltaPos.y) != -2 * selectedPiece.get(options::colour) + 1) { //Not moving in correct vertical direction
 			return false;
@@ -96,7 +149,7 @@ bool Board::isLmovementValid(Piece& selectedPiece, float distance) {
 	return false;
 }
 
-bool Board::isOtherMovementValid(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPos, unsigned int intialIndex, unsigned int finalIndex) {
+bool Board::isOtherMovementValid(Piece& selectedPiece, Piece& targetPiece, utilities::Vec2 deltaPos, unsigned int intialIndex, unsigned int finalIndex) {
 
 	//Diagonal Movement
 	if (selectedPiece.get(diagonalMovement) || selectedPiece.get(diagonalAttackOnly)) {
@@ -118,7 +171,7 @@ bool Board::isOtherMovementValid(Piece& selectedPiece, Piece& targetPiece, Vec2 
 	return false;
 }
 
-bool Board::isCastling(Piece& selectedPiece, Piece& targetPiece, Vec2 deltaPos, int initialIndex, int finalIndex) {
+bool Board::isCastling(Piece& selectedPiece, Piece& targetPiece, utilities::Vec2 deltaPos, int initialIndex, int finalIndex) {
 	//Casteling
 	if (!isAttacking(selectedPiece, targetPiece)) {
 		if (selectedPiece.get(options::castable) && targetPiece.get(options::checkable)) {
@@ -139,7 +192,7 @@ bool Board::isAttacking(Piece& selectedPiece, Piece& targetPiece) {
 bool Board::move(int i1, int i2) {
 	auto& selectedPiece = board[i1];
 	auto& targetPiece = board[i2];
-	Vec2 deltaPos = position(i2) - position(i1);
+	utilities::Vec2 deltaPos = position(i2) - position(i1);
 
 	//Ensure a peice is selected
 	if (vacant(i1)) {
