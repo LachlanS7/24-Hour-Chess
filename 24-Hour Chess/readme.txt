@@ -1,6 +1,1 @@
-Piece class
-Board class
-Basic movement
-Drawing
-User input
-...
+The GUI system is still a work in progress and is in very early stages.
