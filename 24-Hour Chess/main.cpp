@@ -28,7 +28,7 @@ void processInput(GLFWwindow* window, std::unordered_map<int, bool>* inputMap);
 std::string fromFile(std::string location);
 
 void sayHello() {
-    std::cout << "Haru" << std::endl;
+
 }
 
 //------------------------------- Settings -------------------------
@@ -163,7 +163,8 @@ int main() {
 
     GUIWindow guiManager(&MOUSEPOS, &ms, inputMap);
 
-    Button b1({ 0, 100 }, 200, 100, -1, { 1, 0, 1 }, sayHello);
+    Button b1("assets/buttons/buttonUp.png", true, { 430, 300 }, 235, 80, { 1, 0, 1 }, sayHello);
+    b1.addDownTexture("assets/buttons/buttonDown.png", true);
     guiManager.addElement(&b1);
 
     glClearColor(1.0f, 0.2f, 0.1f, 1.0f);
@@ -193,10 +194,6 @@ int main() {
         }
         else {
             ms = mouseState::none;
-        }
-
-        if (b1.isDown(guiManager.mousePos, guiManager.ms)) {
-            b1.runCallback();
         }
 
         if (index1 != -1 && index2 != -1) {
@@ -247,10 +244,14 @@ int main() {
 
         }
 
-        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(b1.getTransform()));
-        //glBindTexture(GL_TEXTURE_2D, 0);
-        //glBindVertexArray(VAO);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        if (b1.getState(guiManager.mousePos, guiManager.ms) == down) {
+            b1.runCallback();
+        }
+
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(b1.getTransform()));
+        glBindTexture(GL_TEXTURE_2D, b1.getTexture());
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -24,8 +24,10 @@ protected:
 	texture m_tex = 0;
 	utilities::Vec3 m_colour = { 0, 0, 0 };
 	glm::mat4 m_transform;
+
 public:
 	UIElement(utilities::Vec2 position = { 0, 0 }, int width = 0, int height = 0, texture tex = -1, utilities::Vec3 colour = { 0, 0, 0 });
+	UIElement(std::string textureAddress, bool rgba = false, utilities::Vec2 position = { 0, 0 }, int width = 0, int height = 0, utilities::Vec3 colour = { 0, 0, 0 });
 	virtual void drawElement() = 0;
 };
 
