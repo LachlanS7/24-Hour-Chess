@@ -16,6 +16,7 @@
     <ProjectGuid>{ae6a90ce-c10a-4dbb-81d0-f6ed6013a887}</ProjectGuid>
     <RootNamespace>My24HourChess</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>w</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -95,13 +96,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="UIElement.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <ItemGroup>

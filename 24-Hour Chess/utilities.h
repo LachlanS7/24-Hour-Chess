@@ -15,15 +15,19 @@ namespace utilities {
 
 	double RoundAwayFromZero(double x);
 
+	class Vec3 {
+	public:
+		float x, y, z;
+	};
+
 	class Vec2 {
 	public:
+		float x, y;
+
 		Vec2(float inX, float inY) {
 			x = inX;
 			y = inY;
 		}
-
-		float x;
-		float y;
 
 		void operator+=(Vec2 v2) {
 			x += v2.x;

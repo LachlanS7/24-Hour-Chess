@@ -12,8 +12,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "Board.h"
+#include "Button.h"
+#include "UIElement.h"
+#include "GUIWindow.h"
 
-unsigned int XPOS, YPOS;
+utilities::Vec2 MOUSEPOS = { 0, 0 };
 unsigned int BUTTON, ACTION;
 
 
@@ -23,6 +26,10 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void processInput(GLFWwindow* window, std::unordered_map<int, bool>* inputMap);
 std::string fromFile(std::string location);
+
+void sayHello() {
+    std::cout << "Haru" << std::endl;
+}
 
 //------------------------------- Settings -------------------------
 unsigned int SCR_WIDTH = 800;
@@ -122,15 +129,15 @@ int main() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-    //---------------------------------- Textures ---------------------------------------
-    
+   
     //----------------------------- Game Intialisation ----------------------------------
 
     Board board;
 
     unsigned int boardTex = 0;
     utilities::genTexture("assets/boards/green.png", &boardTex, false);
+
+    // Textures
 
     board.attachTexture(pawn, 0, "assets/pieces/wp.png", true);
     board.attachTexture(pawn, 1, "assets/pieces/bp.png", true);
@@ -145,16 +152,21 @@ int main() {
     board.attachTexture(queen, 0, "assets/pieces/wq.png", true);
     board.attachTexture(queen, 1, "assets/pieces/bq.png", true);
 
-    std::unordered_map<int, bool> inputMap;
-
-    glClearColor(1.0f, 0.2f, 0.1f, 1.0f);
-
     bool pressingLeftMouseButton = false;
     utilities::Vec2 pos1 = utilities::Vec2(0, 0);
     utilities::Vec2 pos2 = utilities::Vec2(0, 0);
     int index1 = -1;
     int index2 = -1;
 
+    std::unordered_map<int, bool>* inputMap = {};
+    mouseState ms = mouseState::none;
+
+    GUIWindow guiManager(&MOUSEPOS, &ms, inputMap);
+
+    Button b1({ 0, 100 }, 200, 100, -1, { 1, 0, 1 }, sayHello);
+    guiManager.addElement(&b1);
+
+    glClearColor(1.0f, 0.2f, 0.1f, 1.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -162,20 +174,31 @@ int main() {
 
     while (!glfwWindowShouldClose(window)) {
 
-        processInput(window, &inputMap);
+        processInput(window, inputMap);
 
         if (BUTTON == GLFW_MOUSE_BUTTON_LEFT) {
             if (ACTION == GLFW_PRESS && !pressingLeftMouseButton) {
-                pos1 = utilities::Vec2(XPOS, YPOS);
+                ms = mouseState::leftDown;
+                pos1 = MOUSEPOS;
                 index1 = (int)(8 * pos1.x / SCR_WIDTH) + 8 * (7 - (int)(8 * pos1.y / SCR_HEIGHT));
                 pressingLeftMouseButton = true;
             }
             else if (pressingLeftMouseButton && ACTION == GLFW_RELEASE) {
-                pos2 = utilities::Vec2(XPOS, YPOS);
+                ms = mouseState::leftUp;
+                pos2 = MOUSEPOS;
                 index2 = (int)(8 * pos2.x / SCR_WIDTH) + 8 * (7 - (int)(8 * pos2.y / SCR_HEIGHT));
                 pressingLeftMouseButton = false;
+                ms = mouseState::none;
             }
         }
+        else {
+            ms = mouseState::none;
+        }
+
+        if (b1.isDown(guiManager.mousePos, guiManager.ms)) {
+            b1.runCallback();
+        }
+
         if (index1 != -1 && index2 != -1) {
             board.move(index1, index2);
             index1 = -1;
@@ -215,7 +238,7 @@ int main() {
         if (index1 != -1) {
 
             transform = glm::mat4(1);
-            transform = glm::translate(transform, glm::vec3(2.0f * XPOS / SCR_WIDTH - 1, -2.0f * YPOS / SCR_HEIGHT + 1, 0.0f));
+            transform = glm::translate(transform, glm::vec3(2.0f * MOUSEPOS.x / SCR_WIDTH - 1, -2.0f * MOUSEPOS.y / SCR_HEIGHT + 1, 0.0f));
 
             glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
             glBindTexture(GL_TEXTURE_2D, board.getTexture(index1));
@@ -223,6 +246,11 @@ int main() {
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         }
+
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(b1.getTransform()));
+        //glBindTexture(GL_TEXTURE_2D, 0);
+        //glBindVertexArray(VAO);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -261,8 +289,7 @@ std::string fromFile(std::string location) {
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
-    XPOS = xpos;
-    YPOS = ypos;
+    MOUSEPOS = { (float)xpos, (float)ypos };
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
