@@ -58,6 +58,12 @@ texture Button::getTexture() {
 	return (m_buttonState == buttonState::down ? m_downTex == -1 ? m_tex : m_downTex  : m_tex);
 }
 
+void Button::update(utilities::Vec2* mousePos, mouseState* ms, std::unordered_map<int, bool>* inputMap) {
+	if (getState(mousePos, ms) == buttonState::down) {
+		callbackptr();
+	}
+}
+
 glm::mat4 Button::getTransform() {
 	return m_transform;
 }

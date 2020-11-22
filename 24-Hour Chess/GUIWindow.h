@@ -7,16 +7,15 @@
 class GUIWindow
 {
 private:
-	std::vector<UIElement*> m_components = {};
-	bool m_active = true;
+	std::vector<UIElement*> m_elements = {};
+	std::unordered_map<int, bool>* m_inputMap;
+	mouseState* m_mouseState;
+	utilities::Vec2* m_mousePosition;
 
 public:
-	std::unordered_map<int, bool>* inputMap;
-	utilities::Vec2* mousePos;
-	mouseState* ms;
 
-public:
-	GUIWindow(utilities::Vec2* i_mousePos, mouseState* mousestate, std::unordered_map<int, bool>* im);
+	GUIWindow(utilities::Vec2* mousePos, mouseState* mousestate, std::unordered_map<int, bool>* inputMap);
 	void addElement(UIElement* element);
+	void updateElements();
 };
 

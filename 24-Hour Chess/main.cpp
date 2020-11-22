@@ -19,7 +19,6 @@
 utilities::Vec2 MOUSEPOS = { 0, 0 };
 unsigned int BUTTON, ACTION;
 
-
 //------------------------------- Function Declaration --------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
@@ -28,7 +27,7 @@ void processInput(GLFWwindow* window, std::unordered_map<int, bool>* inputMap);
 std::string fromFile(std::string location);
 
 void sayHello() {
-
+    std::cout << "Haru" << std::endl;
 }
 
 //------------------------------- Settings -------------------------
@@ -163,9 +162,11 @@ int main() {
 
     GUIWindow guiManager(&MOUSEPOS, &ms, inputMap);
 
-    Button b1("assets/buttons/buttonUp.png", true, { 430, 300 }, 235, 80, { 1, 0, 1 }, sayHello);
+    Button b1("assets/buttons/buttonUp.png", true, { 0, 0 }, 235, 80, { 1, 0, 1 }, sayHello);
+    Button b2("assets/buttons/buttonDown.png", true, { 200, 300 }, 235, 80, { 1, 0, 1 }, sayHello);
     b1.addDownTexture("assets/buttons/buttonDown.png", true);
     guiManager.addElement(&b1);
+    guiManager.addElement(&b2);
 
     glClearColor(1.0f, 0.2f, 0.1f, 1.0f);
     glEnable(GL_BLEND);
@@ -201,6 +202,8 @@ int main() {
             index1 = -1;
             index2 = -1;
         }
+
+        guiManager.updateElements();
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -241,17 +244,18 @@ int main() {
             glBindTexture(GL_TEXTURE_2D, board.getTexture(index1));
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        }
-
-        if (b1.getState(guiManager.mousePos, guiManager.ms) == down) {
-            b1.runCallback();
         }
 
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(b1.getTransform()));
         glBindTexture(GL_TEXTURE_2D, b1.getTexture());
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(b2.getTransform()));
+        glBindTexture(GL_TEXTURE_2D, b2.getTexture());
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -11,7 +11,7 @@ class Button : public UIElement
 {
 private:
     std::string m_text = "";
-    buttonState m_buttonState = up;
+    buttonState m_buttonState = buttonState::up;
     texture m_downTex = -1;
     void (*callbackptr)();
 
@@ -28,5 +28,6 @@ public:
     glm::mat4 getTransform();
     texture getTexture();
     void drawElement() override;
+    void update(utilities::Vec2* mousePos, mouseState* ms, std::unordered_map<int, bool>* inputMap) override;
 };
 

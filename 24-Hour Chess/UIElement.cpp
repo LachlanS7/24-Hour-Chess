@@ -21,3 +21,7 @@ UIElement::UIElement(std::string textureAddress, bool rgba, utilities::Vec2 posi
 void UIElement::drawElement() {
 	
 }
+
+void UIElement::update(utilities::Vec2* mousePos, mouseState* ms, std::unordered_map<int, bool>* inputMap) {
+
+}
